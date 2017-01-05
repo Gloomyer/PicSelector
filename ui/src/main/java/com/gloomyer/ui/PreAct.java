@@ -9,6 +9,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,9 +32,18 @@ public class PreAct extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gloomy_act);
+        UIManager.getInstance().activities.add(this);
+
         mToolbar = (Toolbar) findViewById(R.id.mToolBar);
+        mToolbar.setNavigationIcon(R.drawable.gloomy_save);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
-        mToolbar.setTitle("  图片预览");
+        mToolbar.setTitle("图片预览");
         Utils.refresh(mToolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
@@ -51,6 +62,21 @@ public class PreAct extends AppCompatActivity {
                 outRect.top = 8;
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.gloomy_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.gloomy_save) {
+            UIManager.getInstance().save(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class Holder extends RecyclerView.ViewHolder {
@@ -104,7 +130,23 @@ public class PreAct extends AppCompatActivity {
                 holder.selected.setBackgroundResource(R.drawable.gloomy_selected);
             }
 
-            holder.selected.setOnClickListener(new View.OnClickListener() {
+            if (UIManager.getInstance().autoSave) {
+                //自动保存
+                holder.selected.setVisibility(View.INVISIBLE);
+                holder.root.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UIManager
+                                .getInstance()
+                                .select
+                                .add(path);
+                        UIManager.getInstance().save(PreAct.this);
+                    }
+                });
+                return;
+            }
+
+            View.OnClickListener listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (index != -1) {
@@ -118,7 +160,9 @@ public class PreAct extends AppCompatActivity {
 
                     if (UIManager.getInstance().select.size()
                             >= UIManager.getInstance().totalCount) {
-                        Toast.makeText(PreAct.this, "已经满了不能再选择了!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PreAct.this,
+                                "已经满了不能再选择了!",
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
                     UIManager
@@ -128,12 +172,29 @@ public class PreAct extends AppCompatActivity {
                     notifyDataSetChanged();
                     Utils.refresh(mToolbar);
                 }
-            });
+            };
+            if (UIManager.getInstance().mImageClickListener != null) {
+                holder.selected.setOnClickListener(listener);
+                holder.root.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UIManager.getInstance().mImageClickListener.onClick(path);
+                    }
+                });
+            } else {
+                holder.root.setOnClickListener(listener);
+            }
         }
 
         @Override
         public int getItemCount() {
             return UIManager.getInstance().getPreCount();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        UIManager.getInstance().activities.remove(this);
+        super.onDestroy();
     }
 }

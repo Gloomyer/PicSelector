@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -33,15 +35,23 @@ public class FolderAct extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
     private List<ResultInfo> infos;
-    private int size;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gloomy_act);
+        UIManager.getInstance().activities.add(this);
+
         mToolbar = (Toolbar) findViewById(R.id.mToolBar);
+        mToolbar.setNavigationIcon(R.drawable.gloomy_save);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
-        mToolbar.setTitle("  相册选择");
+        mToolbar.setTitle("相册选择");
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
 
@@ -59,6 +69,8 @@ public class FolderAct extends AppCompatActivity {
                 outRect.top = 14;
             }
         });
+
+
         Manager.getInstance().startScreen(this, new OnScreenListener() {
             @Override
             public void start() {
@@ -77,6 +89,21 @@ public class FolderAct extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.gloomy_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.gloomy_save) {
+            UIManager.getInstance().save(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -148,4 +175,9 @@ public class FolderAct extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        UIManager.getInstance().activities.remove(this);
+        super.onDestroy();
+    }
 }

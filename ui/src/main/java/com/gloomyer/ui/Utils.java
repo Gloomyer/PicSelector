@@ -16,7 +16,7 @@ public class Utils {
     }
 
     public static void refresh(Toolbar mToolbar) {
-        mToolbar.setSubtitle("  已选 : "
+        mToolbar.setSubtitle("已选 : "
                 + UIManager.getInstance().select.size() + "/"
                 + UIManager.getInstance().totalCount);
     }

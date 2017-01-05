@@ -8,11 +8,11 @@
 
         <activity
             android:name=".FolderAct"
-            android:theme="@style/UIAppTheme" />
+            android:theme="@style/GloomyAppTheme" />
 
         <activity
             android:name=".PreAct"
-            android:theme="@style/UIAppTheme" />
+            android:theme="@style/GloomyAppTheme" />
     </application>
 
 </manifest>
