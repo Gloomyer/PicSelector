@@ -15,8 +15,8 @@ lib:这是负责本地文件读取的I(input)库
 单图选择、多图选择、记录上一次选择的图片模式选择。  
   
 效果预览图:  
-图有点大。如果不能正常查看，请挂代理或者右键另存为本地查看
-![](http://gloomyer.com/img/img/PicSelector.gif)
+图有点大。如果不能正常查看，请挂代理或者右键另存为本地查看  
+![图片](http://gloomyer.com/img/img/PicSelector.gif)
   
 具体调用方式如下:  
   
