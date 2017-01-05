@@ -42,5 +42,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:onClick="c4"
-        android:text="记录以及选择的模式启动" />
+        android:text="记录已经选择的模式启动" />
 </LinearLayout>

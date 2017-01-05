@@ -35,13 +35,7 @@ public class PreAct extends AppCompatActivity {
         UIManager.getInstance().activities.add(this);
 
         mToolbar = (Toolbar) findViewById(R.id.mToolBar);
-        mToolbar.setNavigationIcon(R.drawable.gloomy_save);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.gloomy_back);
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
         mToolbar.setTitle("图片预览");
         Utils.refresh(mToolbar);
@@ -74,9 +68,12 @@ public class PreAct extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.gloomy_save) {
             UIManager.getInstance().save(this);
-            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     private class Holder extends RecyclerView.ViewHolder {
